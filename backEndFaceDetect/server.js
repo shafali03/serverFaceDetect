@@ -1,11 +1,12 @@
 const express = require('express');
-
 const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt-nodejs')
+const bcrypt = require('bcrypt-nodejs');
+const cors = require('cors');
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors())
 
 const database = {
     users: [
@@ -13,6 +14,7 @@ const database = {
             id: '123',
             name: 'John',
             email: 'john@gmail.com',
+            password: 'cookies',
             entries: 0,
             joined: new Date()
         },
@@ -20,6 +22,7 @@ const database = {
             id: '124',
             name: 'Sally',
             email: 'sally@gmail.com',
+            password: 'bananas',
             entries: 0,
             joined: new Date()
         }
@@ -42,23 +45,19 @@ app.get('/', (req, res) => {
 app.post('/signin', (req, res) => {
     if (req.body.email === database.users[0].email &&
         req.body.password === database.users[0].password) {
-        res.json('success we did it this time');
+        res.json('success');
     } else {
-        res.status(400).json('error logging in please try to register again ');
+        res.status(400).json('error logging in');
     }
 })
 
 //register to push to add to the user array
 app.post('/register', (req, res) => {
     const { email, name, password } = req.body;
-    // bcrypt.hash(password, null, null, function (err, hash) {
-    //     console.log(hash)
-    // });
     database.users.push({
         id: '125',
         name: name,
         email: email,
-        password: password,
         entries: 0,
         joined: new Date()
     })
@@ -110,14 +109,6 @@ app.listen(3000, () => {
     console.log('apps is running on port 3000');
 })
 
-/*
-    / --> res = this is working
-    / signin --> POST = success/fail
-    /register --> POST = user
-    /profile/: userId --> GET user
-    /image --> PUT  --> user
 
-
-    */
 
    // Send sensitive information from front end to back end using a https in a post body and with a password use bcrypt 
